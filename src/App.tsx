@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 
-import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
+import Spinner from "react-bootstrap/esm/Spinner";
 import Row from "react-bootstrap/Row";
 
 import api from "./api";
+import { GameBox } from "./components/GameBox/";
 
 import { GameType } from "./types/GamesType";
 
@@ -16,6 +17,7 @@ const App = () => {
     api
       .getGames()
       .then((response) => {
+        console.log(response);
         setGames(response.data);
         setIsLoading(false);
       })
@@ -24,12 +26,18 @@ const App = () => {
 
   return !isLoading ? (
     <div className="App">
-      <Container fluid="md">
-        <Row>{games && games.map((game) => <Col>{game.title}</Col>)}</Row>
+      <Container fluid>
+        <Row>
+          {games && games.map((game) => game.title && <GameBox {...game} />)}
+        </Row>
       </Container>
     </div>
   ) : (
-    <>Loading...</>
+    <Container fluid>
+      <Row className="justify-content-center">
+        <Spinner animation="grow" />
+      </Row>
+    </Container>
   );
 };
 
