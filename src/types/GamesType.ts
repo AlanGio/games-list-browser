@@ -1,17 +1,19 @@
 export type GameType = {
   api_rate_limit?: number;
-  title: string;
+  editors_choice: string;
+  genre: string;
   platform: string;
   score: number;
-  genre: string;
-  editors_choice: string;
+  title: string;
 };
 
 export type GameOrderTypes =
-  | "sort_a_z"
-  | "sort_z_a"
-  | "title"
+  | "editors_choice"
+  | "genre"
   | "platform"
   | "score"
-  | "genre"
-  | "editors_choice";
+  | "sort_a_z"
+  | "sort_z_a"
+  | "title";
+
+export type GameFilterTypes = "platform" | "title";

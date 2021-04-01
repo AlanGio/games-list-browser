@@ -1,15 +1,18 @@
 import { FormControl } from "react-bootstrap";
 
+import { GameFilterTypes } from "../../types/GamesType";
+
 import "./index.scss";
 
 type SearchBoxProps = {
-  searchCallback: (search: string) => void;
+  searchCallback: (search: string, type: GameFilterTypes) => void;
+  type: GameFilterTypes;
 };
 
-const SearchBox = ({ searchCallback }: SearchBoxProps) => (
+const SearchBox = ({ searchCallback, type }: SearchBoxProps) => (
   <FormControl
     placeholder="Search Game..."
-    onChange={(event) => searchCallback(event.target.value)}
+    onChange={(event) => searchCallback(event.target.value, type)}
   />
 );
 
