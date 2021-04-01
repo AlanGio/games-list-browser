@@ -1,14 +1,16 @@
 body {
   .game-box {
-    height: 20em;
+    height: 18em;
     padding: 0;
     position: relative;
+    animation: opac 0.8s;
 
     .card {
       height: inherit;
+      border-radius: 0;
 
       .h5 {
-        margin-top: 20px;
+        margin-top: 25px;
       }
 
       .badge {
@@ -16,6 +18,15 @@ body {
         right: 15px;
         top: 15px;
       }
+    }
+  }
+
+  @keyframes opac {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
     }
   }
 }

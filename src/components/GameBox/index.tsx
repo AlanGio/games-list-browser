@@ -5,12 +5,13 @@ import Col from "react-bootstrap/Col";
 import Badge from "react-bootstrap/Badge";
 import ListGroup from "react-bootstrap/ListGroup";
 import ProgressBar from "react-bootstrap/ProgressBar";
+import Row from "react-bootstrap/Row";
 
 import { GameType } from "../../types/GamesType";
 
 import "./GameBox.scss";
 
-export const GameBox = ({
+const GameBox = ({
   title,
   platform,
   score,
@@ -20,17 +21,23 @@ export const GameBox = ({
   <Col sm="4" xl="3" className="game-box">
     <Card>
       <Card.Body>
-        {editors_choice === "Y" && <Badge variant="info">Editor Choice</Badge>}
+        {editors_choice === "Y" && (
+          <Badge variant="primary">Editor Choice</Badge>
+        )}
         <Card.Title>{title}</Card.Title>
         <Card.Text>{platform}</Card.Text>
       </Card.Body>
       <ListGroup variant="flush">
         <ListGroup.Item>
-          Score: {score}
-          <ProgressBar
-            variant={score > 8 ? "success" : score > 5 ? "info" : "warning"}
-            now={score * 10}
-          />
+          <Row>
+            <Col xs="4">Score: {score}</Col>
+            <Col xs="8">
+              <ProgressBar
+                variant={score > 8 ? "success" : score > 5 ? "info" : "warning"}
+                now={score * 10}
+              />
+            </Col>
+          </Row>
         </ListGroup.Item>
       </ListGroup>
       <Card.Footer className="text-muted">

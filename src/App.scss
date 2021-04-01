@@ -1,0 +1,18 @@
+body {
+  .header {
+    margin-bottom: 15px;
+  }
+
+  .spinner-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+
+    small {
+      padding-top: 15px;
+      text-transform: uppercase;
+    }
+  }
+}
