@@ -8,16 +8,18 @@ import Spinner from "react-bootstrap/Spinner";
 
 import GameBox from "./components/GameBox";
 import SearchBox from "./components/SearchBox";
+import OrderBox from "./components/OrderBox";
 
 import api from "./api";
 
-import { GameType } from "./types/GamesType";
+import { GameOrderTypes, GameType } from "./types/GamesType";
 
 import "./App.scss";
 
 const App = () => {
   const [games, setGames] = useState<GameType[]>([]);
   const [defaultGames, setDefaultGames] = useState<GameType[]>([]);
+  const [orderValues, setOrderValues] = useState<string[]>([]);
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -28,6 +30,11 @@ const App = () => {
         const results = response.data.filter((game) => game.title);
         setGames(results);
         setDefaultGames(results);
+        setOrderValues(
+          Object.keys(
+            results.reduce((game, obj) => Object.assign(game, obj), {})
+          )
+        );
 
         setIsLoading(false);
       })
@@ -41,6 +48,26 @@ const App = () => {
     setGames(foundedGames);
   };
 
+  const handleOrder = (search: GameOrderTypes) => {
+    switch (search) {
+      case "sort_a_z":
+        setGames([...games].sort((a, b) => a.title.localeCompare(b.title)));
+        break;
+      case "sort_z_a":
+        setGames([...games].sort((a, b) => b.title.localeCompare(a.title)));
+        break;
+      default:
+        search
+          ? setGames(
+              [...games].sort((a, b) =>
+                b[search].toString().localeCompare(a[search].toString())
+              )
+            )
+          : setGames(defaultGames);
+        break;
+    }
+  };
+
   return !isLoading ? (
     <div className="App">
       <Container fluid>
@@ -50,10 +77,24 @@ const App = () => {
               <Card.Header as="h2">Games List</Card.Header>
               <Card.Body>
                 <Row>
-                  <Col xs={12} sm={6} className="search-box">
-                    <SearchBox handleSearch={handleSearch} />
+                  <Col xs={12} sm={4} className="search-box">
+                    <SearchBox searchCallback={handleSearch} />
                   </Col>
-                  <Col xs={12} sm={6}></Col>
+                  <Col xs={12} sm={4}>
+                    <OrderBox
+                      orders={[
+                        "sort_a_z",
+                        "sort_z_a",
+                        ...orderValues.filter(
+                          (orderValue) => orderValue !== "title"
+                        ),
+                      ]}
+                      orderCallback={handleOrder}
+                    />
+                  </Col>
+                  <Col xs={12} sm={4}>
+                    Filter Box
+                  </Col>
                 </Row>
               </Card.Body>
             </Card>

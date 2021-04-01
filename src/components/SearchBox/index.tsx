@@ -3,13 +3,13 @@ import { FormControl } from "react-bootstrap";
 import "./index.scss";
 
 type SearchBoxProps = {
-  handleSearch: (search: string) => void;
+  searchCallback: (search: string) => void;
 };
 
-const SearchBox = ({ handleSearch }: SearchBoxProps) => (
+const SearchBox = ({ searchCallback }: SearchBoxProps) => (
   <FormControl
     placeholder="Search Game..."
-    onChange={(event) => handleSearch(event.target.value)}
+    onChange={(event) => searchCallback(event.target.value)}
   />
 );
 
