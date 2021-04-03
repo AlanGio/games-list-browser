@@ -7,7 +7,7 @@ export type GameType = {
   title: string;
 };
 
-export type GameOrderTypes =
+export type GameSortTypes =
   | "editors_choice"
   | "genre"
   | "platform"
@@ -15,5 +15,3 @@ export type GameOrderTypes =
   | "sort_a_z"
   | "sort_z_a"
   | "title";
-
-export type GameFilterTypes = "platform" | "title";

@@ -6,22 +6,24 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Spinner from "react-bootstrap/Spinner";
 
+import FilterBox from "./components/FilterBox";
 import GameBox from "./components/GameBox";
 import SearchBox from "./components/SearchBox";
-import OrderBox from "./components/OrderBox";
+import SortBox from "./components/SortBox";
 
 import api from "./api";
 
-import { GameFilterTypes, GameOrderTypes, GameType } from "./types/GamesType";
+import { GameSortTypes, GameType } from "./types/GamesType";
 
 import "./App.scss";
-import FilterBox from "./components/FilterBox";
 
 const App = () => {
-  const [games, setGames] = useState<GameType[]>([]);
   const [defaultGames, setDefaultGames] = useState<GameType[]>([]);
-  const [orderValues, setOrderValues] = useState<string[]>([]);
-  const [filterValues, setFilterValues] = useState<string[]>([]);
+  const [sortValues, setSortValues] = useState<string[]>([]);
+
+  const [searchText, setSearchText] = useState<string>("");
+  const [filterType, setFilterType] = useState<string>("");
+  const [sortType, setSortType] = useState<GameSortTypes>("sort_a_z");
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -30,53 +32,54 @@ const App = () => {
       .getGames()
       .then((response) => {
         const results = response.data.filter((game) => game.title);
-        setGames(results);
         setDefaultGames(results);
-        setOrderValues(
+        setSortValues(
           Object.keys(
             results.reduce((game, obj) => Object.assign(game, obj), {})
           )
         );
-
-        setFilterValues([...new Set(results.map((result) => result.platform))]);
-
         setIsLoading(false);
       })
       .catch((error) => console.log(error));
   }, []);
 
-  const handleSearch = (search: string, type: GameFilterTypes) => {
-    search.length === 0 && setGames(defaultGames);
+  const filterGames = () => {
+    let foundGames = defaultGames;
 
-    const foundedGames = defaultGames.filter((games) =>
-      games[type].toLowerCase().includes(search.toLowerCase())
-    );
-    setGames(foundedGames);
-  };
-
-  const handleOrder = (search: GameOrderTypes) => {
-    let sorter = [];
-    switch (search) {
-      case "sort_a_z":
-        sorter = [...games].sort((a, b) => a.title.localeCompare(b.title));
-        setGames(sorter);
-        break;
-      case "sort_z_a":
-        sorter = [...games].sort((a, b) => b.title.localeCompare(a.title));
-        setGames(sorter);
-        break;
-      default:
-        sorter = [...games].sort((a, b) =>
-          b[search].toString().localeCompare(a[search].toString())
-        );
-        if (search.length > 0) {
-            setGames(sorter);
-        } else {
-          setGames(defaultGames);
-        }
-        break;
+    if (filterType) {
+      foundGames = foundGames.filter((game) => game.platform === filterType);
     }
+
+    if (searchText) {
+      foundGames = foundGames.filter((game) =>
+        game.title.toLowerCase().includes(searchText.toLowerCase())
+      );
+    }
+
+    if (sortType) {
+      switch (sortType) {
+        case "sort_a_z":
+          foundGames = foundGames.sort((a, b) =>
+            a.title.localeCompare(b.title)
+          );
+          break;
+        case "sort_z_a":
+          foundGames = foundGames.sort((a, b) =>
+            b.title.localeCompare(a.title)
+          );
+          break;
+        default:
+          foundGames = foundGames.sort((a, b) =>
+            b[sortType].toString().localeCompare(a[sortType].toString())
+          );
+          break;
+      }
+    }
+    return foundGames;
   };
+
+  const games = filterGames();
+  const filterValues = [...new Set(games.map((game) => game.platform))];
 
   return !isLoading ? (
     <div className="App">
@@ -84,29 +87,32 @@ const App = () => {
         <Row noGutters className="header">
           <Col xs={12}>
             <Card>
-              <Card.Header as="h2">Games List</Card.Header>
+              <Card.Header>
+                <a href="/">
+                  <h1>Games List</h1>
+                </a>
+              </Card.Header>
               <Card.Body>
-                <Row>
+                <Row className="inputs">
                   <Col xs={12} sm={4} className="search-box">
-                    <SearchBox searchCallback={handleSearch} type="title" />
+                    <SearchBox searchCallback={setSearchText} />
                   </Col>
                   <Col xs={12} sm={4}>
-                    <OrderBox
-                      orders={[
+                    <SortBox
+                      sorts={[
                         "sort_a_z",
                         "sort_z_a",
-                        ...orderValues.filter(
-                          (orderValue) => orderValue !== "title"
+                        ...sortValues.filter(
+                          (sortValue) => sortValue !== "title"
                         ),
                       ]}
-                      orderCallback={handleOrder}
+                      sortCallback={setSortType}
                     />
                   </Col>
                   <Col xs={12} sm={4}>
                     <FilterBox
                       filters={filterValues}
-                      filterCallback={handleSearch}
-                      type="platform"
+                      filterCallback={setFilterType}
                     />
                   </Col>
                 </Row>
@@ -115,7 +121,8 @@ const App = () => {
           </Col>
         </Row>
         <Row noGutters className="games-container">
-          {games && games.map((game) => <GameBox {...game} />)}
+          {games &&
+            games.map((game, index) => <GameBox {...game} key={index} />)}
         </Row>
       </Container>
     </div>

@@ -7,9 +7,18 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  h1 {
+    font-size: 2em;
+    color: black;
+  }
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+// Mobile Catch
+@media (max-width: 600px) {
+  .inputs {
+    > div {
+      margin-bottom: 8px;
+    }
+  }
 }

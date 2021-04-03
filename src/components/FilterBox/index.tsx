@@ -1,21 +1,19 @@
 import FormControl from "react-bootstrap/FormControl";
-import { GameFilterTypes } from "../../types/GamesType";
 
 import "./index.scss";
 
 type FilterBoxProps = {
   filters: string[];
-  filterCallback: (search: string, type: GameFilterTypes) => void;
-  type: GameFilterTypes;
+  filterCallback: (search: string) => void;
 };
 
-const FilterBox = ({ filters, filterCallback, type }: FilterBoxProps) => (
+const FilterBox = ({ filters, filterCallback }: FilterBoxProps) => (
   <FormControl
     as="select"
-    onChange={(event) => filterCallback(event.target.value, type)}
+    onChange={(event) => filterCallback(event.target.value)}
     className="filters-box"
   >
-    <option disabled selected>
+    <option disabled defaultValue="">
       Select Console
     </option>
     <option value="">All</option>
